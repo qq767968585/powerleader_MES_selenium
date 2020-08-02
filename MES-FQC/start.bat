@@ -1,1 +1,1 @@
-start "" cmd /k "activate test&&python mes.py"
+start "" cmd /k "activate test&&python mes_V2.0.py"
