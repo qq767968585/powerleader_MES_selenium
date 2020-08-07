@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
+import time
 import re
 
 class SnFileIsNone(Exception):
@@ -57,6 +59,7 @@ class Mes():
         return sn_list
 
     def index_load(self,oprNO=NO["C02"]):
+        # self.browser.implicitly_wait(3)
         URL="http://192.168.8.34:8950/login-view.html"   
         self.browser.get(URL)
         workStation=Select(browser.find_element_by_css_selector("#workStation"))
@@ -70,11 +73,16 @@ class Mes():
             )
 
     def up_material(self,m,n,sn):           # return next oprNO
+        if n=='F10':
+            oprNO=None
+            status=2
+            return (status,oprNO)
+        self.browser.refresh()
         self.browser.switch_to.default_content()
-        clearLog=WebDriverWait(self.browser,3).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR,'a[id="clearLog"]'))
-                )
-        clearLog.click()
+        # clearLog=WebDriverWait(self.browser,3).until(
+        #         EC.presence_of_element_located((By.CSS_SELECTOR,'a[id="clearLog"]'))
+        #         )
+        # clearLog.click()
         workStationSelect=Select(self.browser.find_element_by_css_selector('select[id="workStationSelect"]'))
         workStationSelect.select_by_value(self.NO[n])
         self.browser.switch_to.frame("frame")
@@ -82,23 +90,37 @@ class Mes():
         input_name.send_keys(sn)
         input_name.send_keys(Keys.ENTER)
         self.browser.switch_to.default_content()
-        parent_element=WebDriverWait(self.browser,3).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR,'div>p:nth-child(2)'))
-                )
-        oprNO_total=parent_element.find_elements_by_css_selector('font')
+        # parent_element=WebDriverWait(self.browser,3).until(
+        #         EC.presence_of_element_located((By.CSS_SELECTOR,'div>p:nth-child(2)'))
+        #         )
+        # self.browser.implicitly_wait(3)
+        try:
+            hint=WebDriverWait(self.browser,3).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR,'div[id="log"]>p:nth-child(4)'))
+                    )
+        except TimeoutException:
+            oprNO=None
+            self.nopass+=1
+            status=2
+            return (status,oprNO)
+        verbose=hint.text
+        oprNO_total=self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font')
+        # oprNO_total=parent_element.find_elements_by_css_selector('font')
         oprNO_list=[]
         for i in oprNO_total:
             oprNO_list.append(i.text)
-        finish_index=len(parent_element.find_elements_by_css_selector('font[color="#00AA00"]'))
+        finish_index=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
         try:
-            oprNO=oprNO_list[finish_index+1]
+            oprNO=oprNO_list[finish_index-1]
         except IndexError:
             oprNO=None
             self.nopass+=1
             status=2
             return (status,oprNO)
-        verbose=self.browser.find_element_by_css_selector('div>p:nth-last-child(1)').text
-        if "完成" in verbose or "半成品" in verbose:
+        # verbose=self.browser.find_element_by_css_selector('div>p:nth-child(4)').text
+        if "完成" in verbose:
+            status=1
+        elif "半成品" in verbose:
             status=1
         elif "当前工序不能收料" in verbose:
             status=0
@@ -108,33 +130,73 @@ class Mes():
         return (status,oprNO)
         
     def finish(self,m,n,sn):
+        if n=='F10':
+            oprNO=None
+            status=2
+            return (status,oprNO)
+        self.browser.refresh()
         self.browser.switch_to.default_content()
-        clearLog=WebDriverWait(self.browser,3).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR,'a[id="clearLog"]'))
-                )
-        clearLog.click()
+        browser.find_element_by_css_selector("a[onclick=\"$f.open(this,'/finish-work.html','完工')\"]").click()
+        # clearLog=WebDriverWait(self.browser,3).until(
+        #         EC.presence_of_element_located((By.CSS_SELECTOR,'a[id="clearLog"]'))
+        #         )
+        # clearLog.click()
         workStationSelect=Select(self.browser.find_element_by_css_selector('select[id="workStationSelect"]'))
         workStationSelect.select_by_value(self.NO[n])
         self.browser.switch_to.frame("frame")
         input_name=self.browser.find_element_by_css_selector('input[id="barcode"]')
         input_name.send_keys(sn)
         input_name.send_keys(Keys.ENTER)
+        # self.browser.implicitly_wait(3)
+        # input_number=self.browser.find_element_by_css_selector('input[id="thisQty"]')
+        # input_number.send_keys('1')
+        # input_name.send_keys(Keys.ENTER)
+        # try:
+        #     WebDriverWait(self.browser,3).until(
+        #         EC.presence_of_element_located((By.CSS_SELECTOR,'input[id="thisQty"]'))
+        #         )
+        # except TimeoutException:
+        #     oprNO=None
+        #     self.nopass+=1
+        #     status=2
+        #     return (status,oprNO)
+        self.browser.switch_to.default_content()
+        try:
+            WebDriverWait(self.browser,3).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR,'div[id="log"]>p:nth-child(2)'))
+                )
+            # time.sleep(3)
+        except TimeoutException:
+            oprNO=None
+            self.nopass+=1
+            status=2
+            return (status,oprNO)
+        self.browser.switch_to.frame("frame")
         self.browser.find_element_by_css_selector('button[onclick="doSave()"]').click()
         self.browser.switch_to.default_content()
-        parent_element=WebDriverWait(self.browser,3).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR,'div>p:nth-child(2)'))
+        try:
+            hint=WebDriverWait(self.browser,3).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR,'div[id="log"]>p:nth-child(4)'))
                 )
-        oprNO_total=parent_element.find_elements_by_css_selector('font')
+        except TimeoutException:
+            oprNO=None
+            self.nopass+=1
+            status=2
+            return (status,oprNO)
+        verbose=hint.text
+        oprNO_total=self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font')
+        # oprNO_total=parent_element.find_elements_by_css_selector('font')
         oprNO_list=[]
         for i in oprNO_total:
             oprNO_list.append(i.text)
-        finish_index=len(parent_element.find_elements_by_css_selector('font[color="#00AA00"]'))
-        oprNO=oprNO_list[finish_index+1]
-        verbose=self.browser.find_element_by_css_selector('div>p:nth-last-child(1)').text
-        noFinish=self.browser.find_elements_by_css_selector('font[color="#0000FF"]')
+        # finish_index=len(parent_element.find_elements_by_css_selector('font[color="#00AA00"]'))
+        finish_index=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
+        oprNO=oprNO_list[finish_index]
+        # verbose=self.browser.find_element_by_css_selector('div>p:nth-last-child(1)').text
+        noFinish=self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#0000FF"]')
         if len(noFinish)==1:
             if "完成" in verbose:
-                oprNO=oprNO_list[finish_index+2]
+                oprNO=oprNO_list[finish_index+1]
                 status=0
             elif "报工不允许数量与工时同时为0" in verbose:
                 status=1
@@ -152,8 +214,8 @@ if __name__ == "__main__":
     options=webdriver.ChromeOptions()      # option:run browser no error in command
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser=webdriver.Chrome(chrome_options=options)
-    browser.maximize_window()
-    browser.implicitly_wait(5)
+    browser.implicitly_wait(3)
+    # browser.maximize_window()
     username="7711"
     password="7711"
     auto=Mes(browser,username,password)
