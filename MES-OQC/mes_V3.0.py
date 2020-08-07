@@ -67,6 +67,7 @@ class Mes():
         self.browser.refresh()          
         self.browser.switch_to.default_content()
         self.browser.find_element_by_css_selector("a[onclick=\"$f.open(this,'/receive.html','上料')\"]").click()
+        time.sleep(1)
         workStationSelect=Select(self.browser.find_element_by_css_selector('select[id="workStationSelect"]'))
         workStationSelect.select_by_value(self.NO[m])
         self.browser.switch_to.frame("frame")
@@ -119,6 +120,7 @@ class Mes():
         self.browser.refresh()
         self.browser.switch_to.default_content()
         self.browser.find_element_by_css_selector("a[onclick=\"$f.open(this,'/finish-work.html','完工')\"]").click()
+        time.sleep(1)
         workStationSelect=Select(self.browser.find_element_by_css_selector('select[id="workStationSelect"]'))
         workStationSelect.select_by_value(self.NO[m])
         self.browser.switch_to.frame("frame")
@@ -133,6 +135,7 @@ class Mes():
         input_name.send_keys(Keys.ENTER)
         time.sleep(3)
         self.browser.find_element_by_css_selector('button[onclick="doSave()"]').click()
+        time.sleep(2)
         self.browser.switch_to.default_content()
         try:
             WebDriverWait(self.browser,3).until(
@@ -150,7 +153,7 @@ class Mes():
         verbose=self.browser.find_element_by_css_selector('div[id="log"]>p:nth-last-child(1)').text
         if total==11:
             if "成功" in verbose:
-                if x<9:
+                if x<8:
                     return(x+1,0)
                 else:
                     return(x,2)
