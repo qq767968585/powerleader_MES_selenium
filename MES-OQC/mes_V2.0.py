@@ -40,10 +40,10 @@ class Mes():
             while(True):
                 if m==0:
                     m,n=self.up_material(m,n,sn)         # m is status,n is oprNO
-                    continue
+                    # continue
                 elif m==1:
                     m,n=self.finish(m,n,sn)
-                    continue
+                    # continue
                 elif m==2:
                     break
                 else:
@@ -78,7 +78,7 @@ class Mes():
         if n=='F10':
             oprNO=None
             status=2
-            print("{} is ok".format(sn))
+            # print("{} is ok".format(sn))
             return (status,oprNO)
         self.browser.refresh()
         self.browser.switch_to.default_content()
@@ -138,7 +138,7 @@ class Mes():
         if n=='F10':
             oprNO=None
             status=2
-            print("{} is ok".format(sn))
+            # print("{} is ok".format(sn))
             return (status,oprNO)
         self.browser.refresh()
         self.browser.switch_to.default_content()
