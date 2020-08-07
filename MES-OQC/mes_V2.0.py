@@ -40,8 +40,10 @@ class Mes():
             while(True):
                 if m==0:
                     m,n=self.up_material(m,n,sn)         # m is status,n is oprNO
+                    continue
                 elif m==1:
                     m,n=self.finish(m,n,sn)
+                    continue
                 elif m==2:
                     break
                 else:
@@ -111,7 +113,7 @@ class Mes():
             oprNO_list.append(i.text)
         finish_index=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
         try:
-            oprNO=oprNO_list[finish_index-1]
+            oprNO=oprNO_list[finish_index]
         except IndexError:
             oprNO=None
             self.nopass+=1
