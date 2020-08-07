@@ -78,6 +78,7 @@ class Mes():
         if n=='F10':
             oprNO=None
             status=2
+            print("{} is ok".format(sn))
             return (status,oprNO)
         self.browser.refresh()
         self.browser.switch_to.default_content()
@@ -114,6 +115,8 @@ class Mes():
         finish_index=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
         try:
             oprNO=oprNO_list[finish_index]
+            print(finish_index)
+            print(oprNO_list)
         except IndexError:
             oprNO=None
             self.nopass+=1
@@ -135,6 +138,7 @@ class Mes():
         if n=='F10':
             oprNO=None
             status=2
+            print("{} is ok".format(sn))
             return (status,oprNO)
         self.browser.refresh()
         self.browser.switch_to.default_content()
