@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException,NoSuchElementException
 import time
 import re
 
@@ -37,7 +37,7 @@ class Mes():
                     continue
                 elif n==2:
                     break
-                elif n==3:
+                else:
                     print("{} is nopass".format(sn))
                     break       
 
@@ -90,7 +90,10 @@ class Mes():
                 return (m,0)
         total=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font'))
         x=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
-        y=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#0000FF"]'))
+        try:
+            y=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#0000FF"]'))
+        except NoSuchElementException:
+            y=0
         verbose=self.browser.find_element_by_css_selector('div[id="log"]>p:nth-last-child(1)').text
         if total==11:
             if "成功" in verbose:
@@ -102,6 +105,19 @@ class Mes():
                     return (x,2)
                 else:
                     return (m,3)
+        elif total==10:
+            if "成功" in verbose:
+                if x<7:
+                    return(x+2,1)
+                else:
+                    return(x+1,2)
+            else:
+                if x>=3 and x<8:
+                    return(x+1,y)
+                elif x>=8:
+                    return (x+1,2)
+                else:
+                    return (m+1,3)
         elif total>11:
             if "成功" in verbose:
                 return(x,1)
@@ -149,7 +165,10 @@ class Mes():
                 return (m,0)
         total=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font'))
         x=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#00AA00"]'))
-        y=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#0000FF"]'))
+        try:
+            y=len(self.browser.find_elements_by_css_selector('div[id="log"]>p:nth-child(2)>font[color="#0000FF"]'))
+        except NoSuchElementException:
+            y=0
         verbose=self.browser.find_element_by_css_selector('div[id="log"]>p:nth-last-child(1)').text
         if total==11:
             if "成功" in verbose:
@@ -164,6 +183,19 @@ class Mes():
                     return (x,2)
                 else:
                     return (m,3)
+        elif total==10:
+            if "成功" in verbose:
+                if x<7:
+                    return(x+2,0)
+                else:
+                    return(x+2,2)
+            else:
+                if x>=3 and x<8:
+                    return(x+1,y)
+                elif x>=8:
+                    return (x+1,2)
+                else:
+                    return (m+1,3)
         elif total>11:
             if "成功" in verbose:
                 if x<11:
