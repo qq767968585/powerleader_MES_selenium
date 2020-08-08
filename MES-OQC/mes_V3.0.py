@@ -25,21 +25,22 @@ class Mes():
     def run(self):
         sn_list=self.sn()
         self.index_load()
-        for sn in sn_list:
-            m=8
-            n=0
-            while(True):
-                if n==0:
-                    m,n=self.up_material(m,n,sn)
-                    continue
-                elif n==1:
-                    m,n=self.finish(m,n,sn)
-                    continue
-                elif n==2:
-                    break
-                else:
-                    print("{} is nopass".format(sn))
-                    break       
+        for i in range(2):
+            for sn in sn_list:
+                m=8
+                n=0
+                while(True):
+                    if n==0:
+                        m,n=self.up_material(m,n,sn)
+                        continue
+                    elif n==1:
+                        m,n=self.finish(m,n,sn)
+                        continue
+                    elif n==2:
+                        break
+                    else:
+                        print("{} is nopass".format(sn))
+                        break       
 
     def sn(self):          #read sn from sn.txt file,return sn list 
         filename="sn.txt"
