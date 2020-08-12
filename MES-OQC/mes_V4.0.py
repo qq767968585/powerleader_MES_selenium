@@ -5,8 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,NoSuchElementException
-import time
 import re
+import argparse
 
 class Mes():
     NO={
@@ -160,11 +160,16 @@ class Mes():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='input your username and password.')
+    parser.add_argument('-u',required=True,help='inpur your username')
+    parser.add_argument('-p',required=True,help='inpur your password')
+    args = parser.parse_args()
+    username=args.u
+    password=args.p
     options=webdriver.ChromeOptions()      # option:run browser no error in command
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser=webdriver.Chrome(chrome_options=options)
-    username="7711"
-    password="7711"
     auto=Mes(browser,username,password)
     auto.run()
     browser.quit()
+    # input()            # cmd pause

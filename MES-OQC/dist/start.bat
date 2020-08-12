@@ -1,0 +1,1 @@
+start "" cmd /k "mes_V4.0.exe -u 7711 -p 7711"
