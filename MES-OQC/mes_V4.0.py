@@ -166,10 +166,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     username=args.u
     password=args.p
-    options=webdriver.ChromeOptions()      # option:run browser no error in command
+    options=webdriver.ChromeOptions()      # option:run browser in the background
+    options.add_argument('headless')   
+    # browser=webdriver.Chrome(chrome_options=options)
+    # options=webdriver.ChromeOptions()      # option:run browser no error in command
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser=webdriver.Chrome(chrome_options=options)
     auto=Mes(browser,username,password)
     auto.run()
     browser.quit()
+    print('\n\n\n process is successful')
     # input()            # cmd pause
