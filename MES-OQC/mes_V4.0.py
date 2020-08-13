@@ -10,27 +10,31 @@ import argparse
 
 class Mes():
     NO={
+        "B07":"1272858625027596288",
+        "C01":"1272849029353431040",
         "D01":"1272015079198396416",
         "D02":"1272015655940362240",
         "D03":"1272015794260119552",
         "D04":"1272015911050514432",
         "C02":"1272849679634128896",
+        "F10":"1272849679634128896",
+        "C03":"1273943582261088256",
         "H01":"1285508455294021632",
     }
 
-    def __init__(self,browser,username,password):
+    def __init__(self,browser,username,password,last_work_NO):
         self.browser=browser
         self.username=username
         self.password=password
-
+        self.last_work_NO=last_work_NO
     def run(self):
         sn_list=self.sn()
         self.index_load()
         for sn in sn_list:
-            m="C02"
+            m="D01"
             n=0
             while(True):
-                if m=='F10':
+                if m==self.last_work_NO:
                     break     # 正常完成退出
                 try:
                     work_NO=self.NO[m]
@@ -163,17 +167,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='input your username and password.')
     parser.add_argument('-u',required=True,help='inpur your username')
     parser.add_argument('-p',required=True,help='inpur your password')
+    parser.add_argument('-w',required=True,help='inpur your last_work_NO')
     args = parser.parse_args()
     username=args.u
     password=args.p
+    last_work_NO=args.w
     options=webdriver.ChromeOptions()      # option:run browser in the background
     options.add_argument('headless')   
     # browser=webdriver.Chrome(chrome_options=options)
     # options=webdriver.ChromeOptions()      # option:run browser no error in command
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser=webdriver.Chrome(chrome_options=options)
-    auto=Mes(browser,username,password)
+    auto=Mes(browser,username,password,last_work_NO)
     auto.run()
     browser.quit()
-    print('\n\n\n process is successful')
+    print('\n\nsuccess\n')
     # input()            # cmd pause
