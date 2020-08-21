@@ -36,13 +36,15 @@ class Mes():
             i,j=0,0
             while(True):
                 if m==self.last_work_NO:
+                    i,j=0,0
                     break     # 正常完成退出
                 try:
                     work_NO=self.NO[m]
                 except KeyError:
                     print("{} is nopass".format(sn))
+                    i,j=0,0
                     break
-                if i>2 or j>2:
+                if i>3 or j>3:
                     m=None
                     continue
                 if n==0:
