@@ -33,6 +33,7 @@ class Mes():
         for sn in sn_list:
             m="D01"
             n=0
+            i,j=0,0
             while(True):
                 if m==self.last_work_NO:
                     break     # 正常完成退出
@@ -41,11 +42,18 @@ class Mes():
                 except KeyError:
                     print("{} is nopass".format(sn))
                     break
+                if i>2 or j>2:
+                    m=None
+                    continue
                 if n==0:
                     m,n=self.up_material(work_NO,sn)
+                    i+=1
+                    j=0
                     continue
                 else:
                     m,n=self.finish(work_NO,sn)
+                    j+=1
+                    i=0
                     continue
 
     def sn(self):          #read sn from sn.txt file,return sn list 
@@ -172,8 +180,8 @@ if __name__ == "__main__":
     username=args.u
     password=args.p
     last_work_NO=args.w
-    options=webdriver.ChromeOptions()      # option:run browser in the background
-    options.add_argument('headless')   
+    options=webdriver.ChromeOptions()      
+    options.add_argument('headless')           # option:run browser in the background
     # browser=webdriver.Chrome(chrome_options=options)
     # options=webdriver.ChromeOptions()      # option:run browser no error in command
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -181,5 +189,5 @@ if __name__ == "__main__":
     auto=Mes(browser,username,password,last_work_NO)
     auto.run()
     browser.quit()
-    print('\n\nsuccess\n')
+    print('\n\n\nsuccess')
     # input()            # cmd pause
