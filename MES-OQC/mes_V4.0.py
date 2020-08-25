@@ -17,8 +17,8 @@ class Mes():
         "D03":"1272015794260119552",
         "D04":"1272015911050514432",
         "C02":"1272849679634128896",
-        "F10":"1272849679634128896",
-        "C03":"1273943582261088256",
+        "F10":"1273943582261088256",
+        "C03":"1272849925290319872",
         "H01":"1285508455294021632",
     }
 
@@ -108,13 +108,17 @@ class Mes():
             if not NO_list:
                 raise NoSuchElementException
             NO_index=len(hint_ele.find_elements_by_css_selector('font[color="#00AA00"]'))
+            if len(NO_list)<NO_index+1:
+                m='0'
+                n=0
+                return m,n
             m=NO_list[NO_index]
             try:
                 n=len(hint_ele.find_elements_by_css_selector('font[color="#0000FF"]'))
             except NoSuchElementException:
                 n=0
             return m,n
-        except (NoSuchElementException,TimeoutException):
+        except Exception:
             m=list(self.NO.keys())[list(self.NO.values()).index(work_NO)]
             n=0
             return m,n
@@ -146,6 +150,10 @@ class Mes():
             if not NO_list:
                 raise NoSuchElementException
             NO_index=len(hint_ele.find_elements_by_css_selector('font[color="#00AA00"]'))
+            if len(NO_list)<NO_index+1:
+                m='0'
+                n=0
+                return m,n
             m=NO_list[NO_index]
             try:
                 n=len(hint_ele.find_elements_by_css_selector('font[color="#0000FF"]'))
@@ -166,7 +174,7 @@ class Mes():
             except TimeoutException:
                 pass
             return m,n
-        except (NoSuchElementException,TimeoutException):
+        except Exception:
             m=list(self.NO.keys())[list(self.NO.values()).index(work_NO)]
             n=0
             return m,n
