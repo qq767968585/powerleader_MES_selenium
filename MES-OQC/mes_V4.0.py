@@ -7,19 +7,29 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException,NoSuchElementException
 import re
 import argparse
+import sys
 
 class Mes():
-    NO={
+    NO_front={
         "B07":"1272858625027596288",
         "C01":"1272849029353431040",
         "D01":"1272015079198396416",
         "D02":"1272015655940362240",
         "D03":"1272015794260119552",
         "D04":"1272015911050514432",
+        "H01":"1285508455294021632",
+    }
+    NO={
+        # "B07":"1272858625027596288",
+        # "C01":"1272849029353431040",
+        # "D01":"1272015079198396416",
+        # "D02":"1272015655940362240",
+        # "D03":"1272015794260119552",
+        # "D04":"1272015911050514432",
+        # "H01":"1285508455294021632",
         "C02":"1272849679634128896",
         "F10":"1273943582261088256",
         "C03":"1272849925290319872",
-        "H01":"1285508455294021632",
     }
 
     def __init__(self,browser,username,password,last_work_NO):
@@ -31,17 +41,22 @@ class Mes():
         sn_list=self.sn()
         self.index_load()
         for sn in sn_list:
-            m="D01"
+            print('{}......'.format(sn),end='',flush=True)
+            m="C02"
             n=0
             i,j=0,0
             while(True):
                 if m==self.last_work_NO:
                     i,j=0,0
+                    print('Done')
                     break     # 正常完成退出
+                if m in self.NO_front:
+                    print('未完成前置工序{}'.format(m)) 
+                    break
                 try:
                     work_NO=self.NO[m]
                 except KeyError:
-                    print("{} is nopass".format(sn))
+                    print('Fail')
                     i,j=0,0
                     break
                 if i>3 or j>3:
@@ -101,6 +116,7 @@ class Mes():
                     )
             hint_text=hint_ele.text
             if '不存在' in hint_text:
+                print('SN号错误',end='')
                 m=None
                 n=0
                 return m,n    
@@ -143,6 +159,7 @@ class Mes():
                     )
             hint_text=hint_ele.text
             if '不存在' in hint_text:
+                print('SN号错误',end='')
                 m=None
                 n=0
                 return m,n    
@@ -193,11 +210,11 @@ if __name__ == "__main__":
     options=webdriver.ChromeOptions()      
     options.add_argument('headless')           # option:run browser in the background
     # browser=webdriver.Chrome(chrome_options=options)
-    # options=webdriver.ChromeOptions()      # option:run browser no error in command
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # options=webdriver.ChromeOptions()     
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])  # option:run browser no error in command
     browser=webdriver.Chrome(chrome_options=options)
     auto=Mes(browser,username,password,last_work_NO)
     auto.run()
     browser.quit()
     print('\n\n\nsuccess')
-    # input()            # cmd pause
+    sys.exit()
